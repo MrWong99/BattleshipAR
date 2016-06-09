@@ -4,18 +4,19 @@ using System.Collections;
 public class GameBoard : MonoBehaviour
 {
 
-    public HittableTile[] ClickableTiles;
-
-    public GameObject[] ShotresultTiles;
+    private HittableTile[] ClickableTiles;
 
     public GameObject[] Ships;
 
+    public GameObject TilePrefab;
+
     public void Update()
     {
-        foreach (HittableTile tile in ClickableTiles) {
+        foreach (HittableTile tile in ClickableTiles)
+        {
             if (tile.getIsHit())
             {
-                if (isBelowShip(tile.transform.position))
+                if (isBelowShip(tile.GetComponent<Collider>().bounds))
                 {
                     tile.HitOnShip = true;
                 }
@@ -23,12 +24,27 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-    private bool isBelowShip(Vector3 pTile)
+    public void Start()
+    {
+        ClickableTiles = new HittableTile[100];
+        int i = 0;
+        for(int y = 0; y < 9; y++)
+        {
+            for (int x = 0; x < 9; x++)
+            {
+                Object o = Instantiate(TilePrefab, new Vector3(-0.45f + 0.1f * x, 0, -0.45f + 0.1f * y), Quaternion.identity);
+                ClickableTiles[i] = ((GameObject)o).GetComponent<HittableTile>();
+                i++;
+            }
+        }
+    }
+
+    private bool isBelowShip(Bounds colTile)
     {
         foreach (GameObject ship in Ships)
         {
-            Bounds b = ship.GetComponent<Collider>().bounds;
-            if (b.Contains(pTile))
+            Bounds colShip = ship.GetComponent<Collider>().bounds;
+            if (colShip.Intersects(colTile))
             {
                 return true;
             }
