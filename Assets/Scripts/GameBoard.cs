@@ -12,6 +12,19 @@ public class GameBoard : MonoBehaviour
 
     public void Update()
     {
+        if (Input.touchCount != 0)
+        {
+            Touch touch = Input.touches[0];
+            switch (touch.phase)
+            {
+                case TouchPhase.Began:
+                    Ray ray = Camera.main.ScreenPointToRay(touch.position);
+                    RaycastHit hit;
+                    Physics.Raycast(ray, out hit, 17000f, TilePrefab.layer);
+                    hit.transform.SendMessage("isHit");
+                    break;
+            }
+        }
         foreach (HittableTile tile in ClickableTiles)
         {
             if (tile.getIsHit())
