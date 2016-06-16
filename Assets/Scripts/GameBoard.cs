@@ -37,15 +37,16 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-    public void Start()
+    public void OnBecameVisible()
     {
         ClickableTiles = new HittableTile[100];
         int i = 0;
-        for(int y = 0; y < 9; y++)
+        for (int y = 0; y < 9; y++)
         {
             for (int x = 0; x < 9; x++)
             {
                 Object o = Instantiate(TilePrefab, new Vector3(-0.45f + 0.1f * x, 0, -0.45f + 0.1f * y), Quaternion.identity);
+                ((GameObject)o).transform.parent = gameObject.transform;
                 ClickableTiles[i] = ((GameObject)o).GetComponent<HittableTile>();
                 i++;
             }
