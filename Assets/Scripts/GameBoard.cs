@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
+using Vuforia;
 using System.Collections;
+using System;
 
-public class GameBoard : MonoBehaviour
+public class GameBoard : MonoBehaviour, ITrackableEventHandler
 {
 
     private HittableTile[] ClickableTiles;
@@ -37,22 +39,6 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-    public void OnBecameVisible()
-    {
-        ClickableTiles = new HittableTile[100];
-        int i = 0;
-        for (int y = 0; y < 9; y++)
-        {
-            for (int x = 0; x < 9; x++)
-            {
-                Object o = Instantiate(TilePrefab, new Vector3(-0.45f + 0.1f * x, 0, -0.45f + 0.1f * y), Quaternion.identity);
-                ((GameObject)o).transform.parent = gameObject.transform;
-                ClickableTiles[i] = ((GameObject)o).GetComponent<HittableTile>();
-                i++;
-            }
-        }
-    }
-
     private bool isBelowShip(Bounds colTile)
     {
         foreach (GameObject ship in Ships)
@@ -64,6 +50,27 @@ public class GameBoard : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public void OnTrackableStateChanged(TrackableBehaviour.Status previousStatus, TrackableBehaviour.Status newStatus)
+    {
+        if (newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED || newStatus == TrackableBehaviour.Status.TRACKED)
+        {
+            ClickableTiles = new HittableTile[100];
+            int i = 0;
+            for (int y = 0; y < 10; y++)
+            {
+                for (int x = 0; x < 10; x++)
+                {
+                    GameObject o = Instantiate(TilePrefab, Vector3.zero, Quaternion.identity) as GameObject;
+                    o.transform.parent = gameObject.transform;
+                    Vector3 pos = new Vector3(-0.45f + 0.1f * x, gameObject.transform.position.y, -0.45f + 0.1f * y);
+                    o.transform.position = pos;
+                    ClickableTiles[i] = o.GetComponent<HittableTile>();
+                    i++;
+                }
+            }
+        }
     }
 
     private class Position
