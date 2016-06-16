@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
-using Vuforia;
 using System.Collections;
 using System;
 
-public class GameBoard : MonoBehaviour, ITrackableEventHandler
+public class GameBoard : MonoBehaviour
 {
 
     private HittableTile[] ClickableTiles;
@@ -52,23 +51,20 @@ public class GameBoard : MonoBehaviour, ITrackableEventHandler
         return false;
     }
 
-    public void OnTrackableStateChanged(TrackableBehaviour.Status previousStatus, TrackableBehaviour.Status newStatus)
+    public void OnEnable()
     {
-        if (newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED || newStatus == TrackableBehaviour.Status.TRACKED)
+        ClickableTiles = new HittableTile[100];
+        int i = 0;
+        for (int y = 0; y < 10; y++)
         {
-            ClickableTiles = new HittableTile[100];
-            int i = 0;
-            for (int y = 0; y < 10; y++)
+            for (int x = 0; x < 10; x++)
             {
-                for (int x = 0; x < 10; x++)
-                {
-                    GameObject o = Instantiate(TilePrefab, Vector3.zero, Quaternion.identity) as GameObject;
-                    o.transform.parent = gameObject.transform;
-                    Vector3 pos = new Vector3(-0.45f + 0.1f * x, gameObject.transform.position.y, -0.45f + 0.1f * y);
-                    o.transform.position = pos;
-                    ClickableTiles[i] = o.GetComponent<HittableTile>();
-                    i++;
-                }
+                GameObject o = Instantiate(TilePrefab, Vector3.zero, Quaternion.identity) as GameObject;
+                o.transform.parent = gameObject.transform;
+                Vector3 pos = new Vector3(-0.45f + 0.1f * x, gameObject.transform.position.y, -0.45f + 0.1f * y);
+                o.transform.position = pos;
+                ClickableTiles[i] = o.GetComponent<HittableTile>();
+                i++;
             }
         }
     }
@@ -107,7 +103,8 @@ public class GameBoard : MonoBehaviour, ITrackableEventHandler
             }
         }
 
-        public Position() : this(0, 0)
+        public Position()
+            : this(0, 0)
         { }
 
         public Position(int x, int y)

@@ -13,6 +13,7 @@ public class UDTEventHandler : MonoBehaviour, IUserDefinedTargetEventHandler
     /// Can be set in the Unity inspector to reference a ImageTargetBehaviour that is instanciated for augmentations of new user defined targets.
     /// </summary>
     public ImageTargetBehaviour ImageTargetTemplate;
+    public GameObject board;
 
     public int LastTargetIndex
     {
@@ -137,7 +138,7 @@ public class UDTEventHandler : MonoBehaviour, IUserDefinedTargetEventHandler
             // create the name of the next target.
             // the TrackableName of the original, linked ImageTargetBehaviour is extended with a continuous number to ensure unique names
             string targetName = string.Format("{0}-{1}", ImageTargetTemplate.TrackableName, mTargetCounter);
-
+            board.SetActive(true);
             // generate a new target:
             mTargetBuildingBehaviour.BuildNewTarget(targetName, ImageTargetTemplate.GetSize().x);
         }
